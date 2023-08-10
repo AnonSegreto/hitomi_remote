@@ -1,0 +1,26 @@
+{
+    "extensionName": {
+        "message": "Hitomi Remote Downloader",
+        "description": "Name of Extension"
+    },
+    "extensionDescription": {
+        "message": "Send download request message to remote server",
+        "description": "Description of Extension"
+    },
+    "actionSave": {
+        "message": "Save",
+        "description": "Save"
+    },
+    "messageSendRequest": {
+        "message": "Send request",
+        "description": "Message of sending request"
+    },
+    "messageRequestSuccessful": {
+        "message": "Requested",
+        "description": "Message of request completed"
+    },
+    "messageRequestFailed": {
+        "message": "Failed",
+        "description": "Message of request failed"
+    }
+}
