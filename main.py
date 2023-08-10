@@ -1,6 +1,8 @@
 from fastapi import FastAPI, status, Response, Request
 from pydantic import BaseModel
 
+import downloader
+
 app = FastAPI()
 
 
@@ -17,6 +19,7 @@ def download(data: Data, request: Request, response: Response):
     response.status_code = status.HTTP_200_OK
     response.headers.append("Access-Control-Allow-Origin", "https://hitomi.la")
     url = data.url
+    downloader.download(url)
     return {"url": url}
 
 @app.options("/", status_code=status.HTTP_200_OK)
