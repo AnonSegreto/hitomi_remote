@@ -1,22 +1,52 @@
 import subprocess
 from pycbzhelper import Helper
 import json
-from os import listdir, remove
+from os import listdir, remove, path
 from shutil import move
 from pathlib import Path
+import datetime
 
 PARENT = Path(__name__).resolve().parent
 OUT = PARENT / ".out"
+IS_DEBUG = path.exists("debug.json")
+TIMEOUT = 500 if IS_DEBUG else 5
 
 def download(url: str):
-    process = subprocess.run("gallery-dl -D .out -f {gallery_id}_{num:04}.png --write-info-json " + url)
+    command = [
+        "gallery-dl",
+        "-D",
+        str(OUT),
+        "-f",
+        "{gallery_id}_{num:04}.png",
+        "--write-info-json",
+        url
+    ]
+    process = subprocess.Popen(command, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    process.wait()
     generate()
 
 def generate():
+    begin = datetime.datetime.now()
+    enter = False
+    while(not enter):
+        enter = path.exists(OUT / "info.json")
+        current = datetime.datetime.now()
+        if ((current - begin).total_seconds() > TIMEOUT):  # Return if json file downloading is failed in 5 sec
+            return
     data = {}
     with open(OUT / "info.json", 'r', encoding='utf-8') as f:
         data = json.load(f)
     id = data["gallery_id"]
+    # Check download complete
+    numbers = data["count"]
+    enter = False
+    begin = datetime.datetime.now()
+    while(not enter):
+        fs = listdir(OUT)
+        enter = f"{id}_{numbers:04}.png" in fs
+        current = datetime.datetime.now()
+        if ((current - begin).total_seconds() > TIMEOUT):  # Return if json file downloading is failed in 5 sec
+            return
     metadata = {}
     metadata["Title"] = data["title"]
     if len(data["date"]) > 10:
