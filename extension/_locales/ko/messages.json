@@ -1,0 +1,30 @@
+{
+    "extensionName": {
+        "message": "Hitomi Remote Downloader",
+        "description": "Name of Extension"
+    },
+    "extensionDescription": {
+        "message": "Hitomi 갤러리를 다운로드하도록 서버에 요청을 전송합니다.",
+        "description": "Description of Extension"
+    },
+    "actionSave": {
+        "message": "저장",
+        "description": "Save"
+    },
+    "messageSendRequest": {
+        "message": "다운로드 요청",
+        "description": "Message of sending request"
+    },
+    "messageRequestSuccessful": {
+        "message": "다운로드 완료",
+        "description": "Message of request completed"
+    },
+    "messageRequested": {
+        "message": "요청 완료",
+        "description": "Message of request sent"
+    },
+    "messageRequestFailed": {
+        "message": "실패",
+        "description": "Message of request failed"
+    }
+}
