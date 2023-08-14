@@ -19,7 +19,9 @@ def download(data: Data, request: Request, response: Response):
     response.status_code = status.HTTP_200_OK
     response.headers.append("Access-Control-Allow-Origin", "https://hitomi.la")
     url = data.url
-    downloader.download(url)
+    result = downloader.download(url)
+    if not result:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
     return {"url": url}
 
 @app.options("/", status_code=status.HTTP_200_OK)
