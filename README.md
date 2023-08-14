@@ -2,17 +2,21 @@
 
 Download [Hitomi.la](https://hitomi.la) gallery remotely as `.cbz` file using chrome extension and self-hosted server.
 
-## How does it works
+## What is difference between original download button in Hitomi.la?
 
-The extension add **Send request** button in gallery page of [Hitomi.la](https://hitomi.la). If user press this button, extension send POST request to remote server with gallery's URL. After the download complete, button will be changed as **Requested**. You can access the `.cbz` file from server using FTP, SFTP, WebDAV, etc.
+Original **Download** button in Hitomi.la download only images as `.zip`. However, this project download images with its metadata and save as `.cbz` file. So if you are managing your own library, editing metadata is not needed anymore. Also, this project is originally developed for my [Komga](https://komga.org/) library.
 
-> Download will be progressed separately from client. So, you can close the page immediately after pressing the button.
+## How does it works?
+
+The extension add **Send request** button in gallery page of [Hitomi.la](https://hitomi.la). If user press this button, extension send POST request to remote server with gallery's URL. After the download complete, button will be changed as **Downloaded**. You can access the `.cbz` file from server using your media server, FTP, SFTP, WebDAV, etc.
+
+> Download will be progressed separately from client. So you can close the page immediately after pressing the button.
 
 ## How to use
 
 You can set up your server using `docker-compose` or manually. I suggest you using `docker-compose`.
 
-Also, you can send request using browser extension or manually. Browser extension is more easier than manual one.
+Also, you can send request using browser extension or manually. Browser extension is more easier than manual.
 
 > You must set up your server working with **HTTPS** if you use browser extension. You can do this using `certbot` or your own certificates.
 
@@ -37,7 +41,7 @@ services:
 
 > [YOUR DIRECTORY] is location of file downloaded.
 
-2. Setup reverse proxy and HTTPS using NGINX. (Other service also available but I only test on NGINX)
+2. Setup reverse proxy and HTTPS using NGINX. (Other service also available but I only tested on NGINX)
 
 ```conf
 http {
@@ -67,7 +71,6 @@ git clone https://gitlab.com/anon_segreto/hitomi_remote.git
 4. Run `./production.sh`.
 
 > You should setup HTTPS on your own in this case.
-
 
 ### Send request
 
