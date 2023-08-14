@@ -72,6 +72,7 @@ def generate() -> bool:
                 "File": OUT / name,
             })
     output = OUT / f"{id}.cbz"
+    print(f"Download: {id} ({metadata['Series']}) - {', '.join(metadata['Tags'][0:3])}")
     helper = Helper(metadata)
     helper.create_cbz(output)
     for name in os.listdir(".out"):
@@ -80,10 +81,12 @@ def generate() -> bool:
         os.remove(str(OUT / name))
     if not os.path.exists(PARENT / "dest" / series):
         os.mkdir(PARENT / "dest" /  series)
+        print(f"{series} directory does not exists. Create one...")
     try:
         shutil.move(str(output), str(PARENT / "dest" / series))
+        print(f"{id} has been downloaded successfully")
     except FileExistsError or FileNotFoundError or shutil.Error:
-        print(f"Error on handling: {output}")
+        print(f"Error on handling: {id}")
         os.remove(str(output))
         return False
     return True
