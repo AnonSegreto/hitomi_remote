@@ -37,6 +37,7 @@ async function sendRequest() {
         onRequestFailed(`URL is invalid: ${url}`)
         return false
     }
+    setButtonTitle(chrome.i18n.getMessage("messageRequested"))
     const response = await fetch(url, {
         method: "POST",
         headers: {

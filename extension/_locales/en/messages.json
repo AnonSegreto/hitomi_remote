@@ -16,8 +16,12 @@
         "description": "Message of sending request"
     },
     "messageRequestSuccessful": {
-        "message": "Requested",
+        "message": "Downloaded",
         "description": "Message of request completed"
+    },
+    "messageRequested": {
+        "message": "Request send",
+        "description": "Message of request sent"
     },
     "messageRequestFailed": {
         "message": "Failed",
