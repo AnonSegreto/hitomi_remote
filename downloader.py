@@ -77,7 +77,7 @@ def generate(temp) -> bool:
     metadata["AgeRating"] = "Adults Only 18+"
     metadata["Publisher"] = "Hitomi.la"
     metadata["Pages"] = []
-    for name in os.listdir(temp):
+    for name in sorted(os.listdir(temp)):
         if "png" in name:
             metadata["Pages"].append({
                 "File": temp / name,
@@ -88,7 +88,8 @@ def generate(temp) -> bool:
     helper = Helper(metadata)
     helper.create_cbz(temp / filename)
     # Clear cache
-    for name in os.listdir(temp):
+    files = sorted(os.listdir(temp))
+    for name in files:
         if "cbz" in name:
             continue
         os.remove(str(temp / name))
@@ -106,7 +107,7 @@ def generate(temp) -> bool:
     try:
         shutil.move(str(temp / filename), str(output))
         logger.info(f"{id} has been downloaded successfully")
-    except FileExistsError or FileNotFoundError or shutil.Error:
+    except Exception:
         logger.info(f"Error on handling: {id}")
         removeDirectory(temp)
         return False
