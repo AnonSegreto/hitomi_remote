@@ -4,27 +4,27 @@
         "description": "Name of Extension"
     },
     "extensionDescription": {
-        "message": "Send download request message to remote server",
+        "message": "サーバーがギャラリーをダウンロードするようリクエストを送ります。",
         "description": "Description of Extension"
     },
     "actionSave": {
-        "message": "Save",
+        "message": "保存",
         "description": "Save"
     },
     "messageSendRequest": {
-        "message": "Send request",
+        "message": "ダウンロード要請",
         "description": "Message of sending request"
     },
     "messageRequestSuccessful": {
-        "message": "Downloaded",
+        "message": "ダウンロード済み",
         "description": "Message of request completed"
     },
     "messageRequested": {
-        "message": "Request send",
+        "message": "要請済み",
         "description": "Message of request sent"
     },
     "messageRequestFailed": {
-        "message": "Failed",
+        "message": "失敗",
         "description": "Message of request failed"
     }
 }

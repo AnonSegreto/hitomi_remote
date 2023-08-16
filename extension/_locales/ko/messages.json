@@ -4,27 +4,27 @@
         "description": "Name of Extension"
     },
     "extensionDescription": {
-        "message": "Send download request message to remote server",
+        "message": "Hitomi 갤러리를 다운로드하도록 서버에 요청을 전송합니다.",
         "description": "Description of Extension"
     },
     "actionSave": {
-        "message": "Save",
+        "message": "저장",
         "description": "Save"
     },
     "messageSendRequest": {
-        "message": "Send request",
+        "message": "다운로드 요청",
         "description": "Message of sending request"
     },
     "messageRequestSuccessful": {
-        "message": "Downloaded",
+        "message": "다운로드 완료",
         "description": "Message of request completed"
     },
     "messageRequested": {
-        "message": "Request send",
+        "message": "요청 완료",
         "description": "Message of request sent"
     },
     "messageRequestFailed": {
-        "message": "Failed",
+        "message": "실패",
         "description": "Message of request failed"
     }
 }
