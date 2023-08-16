@@ -5,6 +5,10 @@ import os
 import shutil
 from pathlib import Path
 import datetime
+import re
+import logging
+
+logger = logging.getLogger("uvicorn")
 
 PARENT = Path(__name__).resolve().parent
 OUT = PARENT / ".out"
@@ -12,10 +16,15 @@ IS_DEBUG = os.path.exists("debug.json")
 TIMEOUT = 500 if IS_DEBUG else 5
 
 def download(url: str):
+    temp = OUT / re.sub("[^0-9]", "", url)[0:16]
+    # Check temp directory exists
+    if os.path.exists(temp):
+        logger.info(f"{temp} is exists. Task {url} has been cancled")
+        return False
     command = [
         "gallery-dl",
         "-D",
-        str(OUT),
+        str(temp),
         "-f",
         "{gallery_id}_{num:04}.png",
         "--write-info-json",
@@ -23,18 +32,19 @@ def download(url: str):
     ]
     process = subprocess.Popen(command, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     process.wait()
-    return generate()
+    return generate(temp)
 
-def generate() -> bool:
+def generate(temp) -> bool:
+    # Check metadata is ready
     begin = datetime.datetime.now()
     enter = False
     while(not enter):
-        enter = os.path.exists(OUT / "info.json")
+        enter = os.path.exists(temp / "info.json")
         current = datetime.datetime.now()
         if ((current - begin).total_seconds() > TIMEOUT):  # Return if json file downloading is failed in 5 sec
             return False
     data = {}
-    with open(OUT / "info.json", 'r', encoding='utf-8') as f:
+    with open(temp / "info.json", 'r', encoding='utf-8') as f:
         data = json.load(f)
     id = data["gallery_id"]
     # Check download complete
@@ -42,11 +52,12 @@ def generate() -> bool:
     enter = False
     begin = datetime.datetime.now()
     while(not enter):
-        fs = os.listdir(OUT)
+        fs = os.listdir(temp)
         enter = f"{id}_{numbers:04}.png" in fs
         current = datetime.datetime.now()
         if ((current - begin).total_seconds() > TIMEOUT * numbers):  # Return if json file downloading is failed in 5 sec
             return False
+    # Set metadata
     metadata = {}
     metadata["Title"] = data["title"]
     if len(data["date"]) > 10:
@@ -66,27 +77,43 @@ def generate() -> bool:
     metadata["AgeRating"] = "Adults Only 18+"
     metadata["Publisher"] = "Hitomi.la"
     metadata["Pages"] = []
-    for name in os.listdir(OUT):
+    for name in os.listdir(temp):
         if "png" in name:
             metadata["Pages"].append({
-                "File": OUT / name,
+                "File": temp / name,
             })
-    output = OUT / f"{id}.cbz"
-    print(f"Download: {id} ({metadata['Series']}) - {', '.join(metadata['Tags'][0:3])}")
+    logger.info(f"Download: {id} ({metadata['Series']}) - {metadata['Web']}")
+    # Create cbz
+    filename = f"{id}.cbz"
     helper = Helper(metadata)
-    helper.create_cbz(output)
-    for name in os.listdir(".out"):
+    helper.create_cbz(temp / filename)
+    # Clear cache
+    for name in os.listdir(temp):
         if "cbz" in name:
             continue
-        os.remove(str(OUT / name))
-    if not os.path.exists(PARENT / "dest" / series):
-        os.mkdir(PARENT / "dest" /  series)
-        print(f"{series} directory does not exists. Create one...")
+        os.remove(str(temp / name))
+    # Create series directory in save directory
+    destination = PARENT / "dest" / series
+    if not os.path.exists(destination):
+        os.mkdir(destination)
+        logger.info(f"{series} directory does not exists. Create one...")
+    # Remove old file which its name is same
+    output = destination / filename
+    if os.path.exists(output):
+        logger.info(f"{filename} is already exists. Remove it...")
+        os.remove(output)
+    # Move to destination
     try:
-        shutil.move(str(output), str(PARENT / "dest" / series))
-        print(f"{id} has been downloaded successfully")
+        shutil.move(str(temp / filename), str(output))
+        logger.info(f"{id} has been downloaded successfully")
     except FileExistsError or FileNotFoundError or shutil.Error:
-        print(f"Error on handling: {id}")
-        os.remove(str(output))
+        logger.info(f"Error on handling: {id}")
+        removeDirectory(temp)
         return False
+    removeDirectory(temp)
     return True
+
+def removeDirectory(dir):
+    # Remote temp directory
+    if os.path.exists(dir):
+        os.rmdir(dir)

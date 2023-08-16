@@ -1,7 +1,11 @@
 from fastapi import FastAPI, status, Response, Request
 from pydantic import BaseModel
+import logging
 
 import downloader
+
+logger = logging.getLogger("uvicorn")
+logger.info("Initialize system")
 
 app = FastAPI()
 
