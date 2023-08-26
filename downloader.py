@@ -65,9 +65,6 @@ def generate(temp) -> bool:
         metadata["Month"] = int(data["date"][5:7])
         metadata["Date"] = int(data["date"][8:10])
     metadata["Writer"] = ",".join([*data["artist"], *data["group"]])
-    series = data["parody"][0] if len(data["parody"]) > 0 else data["type"]
-    metadata["Series"] = series
-    metadata["SeriesGroup"] = ",".join(data["parody"])
     metadata["Genre"] = data["type"]
     metadata["Tags"] = ",".join([*data["tags"], *data["parody"], *data["characters"]])
     metadata["Manga"] = "YesAndRightToLeft"
@@ -82,7 +79,7 @@ def generate(temp) -> bool:
             metadata["Pages"].append({
                 "File": temp / name,
             })
-    logger.info(f"Download: {id} ({metadata['Series']}) - {metadata['Web']}")
+    logger.info(f"Download: {id} - {metadata['Web']}")
     # Create cbz
     filename = f"{id}.cbz"
     helper = Helper(metadata)
@@ -93,15 +90,10 @@ def generate(temp) -> bool:
         if "cbz" in name:
             continue
         os.remove(str(temp / name))
-    # Create series directory in save directory
-    destination = PARENT / "dest" / series
-    if not os.path.exists(destination):
-        os.mkdir(destination)
-        logger.info(f"{series} directory does not exists. Create one...")
     # Remove old file which its name is same
-    output = destination / filename
+    output = (PARENT / "dest") / filename
     if os.path.exists(output):
-        logger.info(f"{filename} is already exists. Remove it...")
+        logger.info(f"{filename} is already exists. Remove old one...")
         os.remove(output)
     # Move to destination
     try:
