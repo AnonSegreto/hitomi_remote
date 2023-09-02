@@ -8,7 +8,12 @@ window.addEventListener("load", () => {
 })
 
 async function getServerUrl() {
-    return await chrome.storage.local.get("url")
+    const url = (await chrome.storage.local.get("url")).url
+    if (url === null || url === undefined || url === "") {
+        onRequestFailed(`URL is invalid: ${url}`)
+        return ""
+    }
+    return url
 }
 
 function insertSendButton() {
@@ -33,9 +38,8 @@ function setButtonTitle(title) {
 }
 
 async function sendRequest() {
-    const url = (await getServerUrl()).url
-    if (url === null || url === undefined || url === "") {
-        onRequestFailed(`URL is invalid: ${url}`)
+    const url = await getServerUrl()
+    if (url === "") {
         return false
     }
     setButtonTitle(chrome.i18n.getMessage("messageRequested"))
@@ -58,7 +62,12 @@ async function sendRequest() {
 }
 
 async function checkFileExist() {
-    const response = await fetch(url + `/${document.URL}`)
+    const url = await getServerUrl()
+    if (url === "") {
+        return false
+    }
+    const target = url + `/${encodeURI(document.URL.substring(document.URL.lastIndexOf('/') + 1))}`
+    const response = await fetch(target)
     if (response.ok) {
         onRequestSucceful("Already downloaded")
     }
