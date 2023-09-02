@@ -4,6 +4,7 @@ const timeRestoreButtonTitle = 5
 
 window.addEventListener("load", () => {
     insertSendButton()
+    checkFileExist()
 })
 
 async function getServerUrl() {
@@ -54,6 +55,13 @@ async function sendRequest() {
     onRequestSucceful(`Request successful`)
     return false
 
+}
+
+async function checkFileExist() {
+    const response = await fetch(url + `/${document.URL}`)
+    if (response.ok) {
+        onRequestSucceful("Already downloaded")
+    }
 }
 
 async function onRequestSucceful(message) {
