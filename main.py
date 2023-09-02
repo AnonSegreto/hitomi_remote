@@ -3,6 +3,8 @@ from pydantic import BaseModel
 import logging
 
 import downloader
+import file_handler
+import utilities as util
 
 logger = logging.getLogger("uvicorn")
 logger.info("Initialize system")
@@ -14,9 +16,12 @@ class Data(BaseModel):
     url: str
 
 
-@app.get("/")
-def read_root():
-    return 404
+@app.get("/{url}")
+def read_root(url: str, response: Response):
+    result = file_handler.check_file_exist(downloader.DEST, util.get_gallery_id(url))
+    if not result:
+        response.status_code = status.HTTP_404_NOT_FOUND
+    return result if not result is None else response.status_code
 
 @app.post("/", status_code=status.HTTP_200_OK)
 def download(data: Data, request: Request, response: Response):

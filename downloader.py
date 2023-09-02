@@ -12,6 +12,7 @@ logger = logging.getLogger("uvicorn")
 
 PARENT = Path(__name__).resolve().parent
 OUT = PARENT / ".out"
+DEST = PARENT / "dest"
 IS_DEBUG = os.path.exists("debug.json")
 TIMEOUT = 500 if IS_DEBUG else 5
 
@@ -91,7 +92,7 @@ def generate(temp) -> bool:
             continue
         os.remove(str(temp / name))
     # Remove old file which its name is same
-    output = (PARENT / "dest") / filename
+    output = (DEST) / filename
     if os.path.exists(output):
         logger.info(f"{filename} is already exists. Remove old one...")
         os.remove(output)
