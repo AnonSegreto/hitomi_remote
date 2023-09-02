@@ -4,10 +4,16 @@ const timeRestoreButtonTitle = 5
 
 window.addEventListener("load", () => {
     insertSendButton()
+    checkFileExist()
 })
 
 async function getServerUrl() {
-    return await chrome.storage.local.get("url")
+    const url = (await chrome.storage.local.get("url")).url
+    if (url === null || url === undefined || url === "") {
+        onRequestFailed(`URL is invalid: ${url}`)
+        return ""
+    }
+    return url
 }
 
 function insertSendButton() {
@@ -32,9 +38,8 @@ function setButtonTitle(title) {
 }
 
 async function sendRequest() {
-    const url = (await getServerUrl()).url
-    if (url === null || url === undefined || url === "") {
-        onRequestFailed(`URL is invalid: ${url}`)
+    const url = await getServerUrl()
+    if (url === "") {
         return false
     }
     setButtonTitle(chrome.i18n.getMessage("messageRequested"))
@@ -54,6 +59,17 @@ async function sendRequest() {
     onRequestSucceful(`Request successful`)
     return false
 
+}
+
+async function checkFileExist() {
+    const url = await getServerUrl()
+    if (url === "") {
+        return false
+    }
+    const response = await fetch(url + `/${document.URL}`)
+    if (response.ok) {
+        onRequestSucceful("Already downloaded")
+    }
 }
 
 async function onRequestSucceful(message) {
