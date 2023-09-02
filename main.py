@@ -19,6 +19,7 @@ class Data(BaseModel):
 @app.get("/{url}")
 def read_root(url: str, response: Response):
     result = file_handler.check_file_exist(downloader.DEST, util.get_gallery_id(url))
+    response.headers.append("Access-Control-Allow-Origin", "https://hitomi.la")
     if not result:
         response.status_code = status.HTTP_404_NOT_FOUND
     return result if not result is None else response.status_code
