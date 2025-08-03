@@ -7,3 +7,4 @@ extension
 .git
 .gitignore
 README.md
+test/*.http
