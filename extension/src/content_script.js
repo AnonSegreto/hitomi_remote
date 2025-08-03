@@ -4,6 +4,7 @@ const timeRestoreButtonTitle = 5
 
 window.addEventListener("load", () => {
     insertSendButton()
+    checkExist()
 })
 
 async function getServerUrl() {
@@ -78,6 +79,9 @@ async function sendRequest() {
         return false
     }
     onRequestSucceful(`Request successful`)
+    if (response.body.status === true) {
+        onBookExist()
+    }
     return false
 
 }
@@ -91,4 +95,9 @@ async function onRequestFailed(message) {
     setButtonTitle(chrome.i18n.getMessage("messageRequestFailed"))
     setTimeout(setButtonTitle(), timeRestoreButtonTitle * 1000)
     console.warn(message)
+}
+
+async function onBookExist() {
+    setButtonTitle(chrome.i18n.getMessage("messageBookExists"))
+    console.debug("Book already exists")
 }

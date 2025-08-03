@@ -26,5 +26,9 @@
     "messageRequestFailed": {
         "message": "Failed",
         "description": "Message of request failed"
+    },
+    "messageBookExists": {
+        "message": "Completed",
+        "description": "Message indicating that the book already exists"
     }
 }

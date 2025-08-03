@@ -26,5 +26,9 @@
     "messageRequestFailed": {
         "message": "실패",
         "description": "Message of request failed"
+    },
+    "messageBookExists": {
+        "message": "완료",
+        "description": "Message indicating that the book already exists"
     }
 }
