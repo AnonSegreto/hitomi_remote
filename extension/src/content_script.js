@@ -31,9 +31,35 @@ function setButtonTitle(title) {
     buttonTitle.innerText = title
 }
 
+function isUrlValid(url) {
+    return url === null || url === undefined || url === ""
+}
+
+async function checkExist() {
+    const url = (await getServerUrl()).url
+    if (isUrlValid(url)) {
+        return false
+    }
+    const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            "url": document.URL
+        })
+    })
+    if (!response.ok) {
+        onRequestFailed(`Response: ${response.body}`)
+        return false
+    }
+    onRequestSucceful(`Request successful`)
+    return false
+}
+
 async function sendRequest() {
     const url = (await getServerUrl()).url
-    if (url === null || url === undefined || url === "") {
+    if (isUrlValid(url)) {
         onRequestFailed(`URL is invalid: ${url}`)
         return false
     }
