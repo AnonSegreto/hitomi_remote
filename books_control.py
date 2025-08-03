@@ -8,9 +8,7 @@ import shutil
 from pathlib import Path
 import datetime
 import re
-import logging
-
-logger = logging.getLogger("uvicorn")
+from logcatter import Log
 
 PARENT = Path(__name__).resolve().parent
 OUT = PARENT / ".out"
@@ -22,7 +20,7 @@ def download(url: str, collection: str = "") -> bool:
     temp = OUT / re.sub("[^0-9]", "", url)[0:16]
     # Check temp directory exists
     if os.path.exists(temp):
-        logger.info(f"{temp} is exists. Task {url} has been cancled")
+        Log.i(f"{temp} is exists. Task {url} has been cancled")
         return False
     command = [
         "gallery-dl",
@@ -88,7 +86,7 @@ def generate(temp, collection) -> bool:
     cbz_content = comic.pack()
     cbz_path = temp / Path(filename)
     cbz_path.write_bytes(cbz_content)
-    logger.info(f"Download: {id} - {url}")
+    Log.i(f"Download: {id} - {url}")
     # Clear cache
     files = sorted(os.listdir(temp))
     for name in files:
@@ -103,14 +101,14 @@ def generate(temp, collection) -> bool:
             os.makedirs(output, exist_ok=True)
     output = output / filename
     if os.path.exists(output):
-        logger.info(f"{filename} is already exists. Remove old one...")
+        Log.w(f"{filename} is already exists. Remove old one...")
         os.remove(output)
     # Move to destination
     try:
         shutil.move(str(temp / filename), str(output))
-        logger.info(f"{id} has been downloaded successfully")
+        Log.i(f"{id} has been downloaded successfully")
     except Exception:
-        logger.info(f"Error on handling: {id}")
+        Log.e(f"Error on handling: {id}")
         removeDirectory(temp)
         return False
     removeDirectory(temp)
@@ -124,14 +122,16 @@ def removeDirectory(dir):
 def book_exist(id):
     if id == "":
         return False
+    results = []
     def loop(dir):
         for file in os.listdir(dir):
             if os.path.isdir(dir / file):
                 return loop(dir / file)
             elif file == f"{id}.cbz":
-                return True
-        return False
-    return loop(DEST)
+                results.append(True)
+        results.append(False)
+    loop(DEST)
+    return any(results)
 
 
 def get_collections():
