@@ -41,14 +41,11 @@ async function checkExist() {
     if (isUrlValid(url)) {
         return false
     }
-    const response = await fetch(url, {
+    const response = await fetch(`${url}?url=${document.URL}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            "url": document.URL
-        })
+        }
     })
     if (!response.ok) {
         onRequestFailed(`Response: ${response.body}`)
