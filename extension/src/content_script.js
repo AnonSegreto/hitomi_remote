@@ -51,7 +51,9 @@ async function checkExist() {
         onRequestFailed(`Response: ${response.body}`)
         return false
     }
-    onRequestSucceful(`Request successful`)
+    if (response.body.status === true) {
+        onBookExist()
+    }
     return false
 }
 
@@ -76,9 +78,6 @@ async function sendRequest() {
         return false
     }
     onRequestSucceful(`Request successful`)
-    if (response.body.status === true) {
-        onBookExist()
-    }
     return false
 
 }
