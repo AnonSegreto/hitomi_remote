@@ -4,10 +4,16 @@ import logging
 import re
 import os
 
+from logcatter import Log
+
 import books_control
 
-logger = logging.getLogger("uvicorn")
-logger.info("Initialize system")
+Log.init()
+custom_logger = Log.get_logger()
+# Replace uvicorn loggers' handlers with logcatter's handlers
+for logger_name in ("uvicorn", "uvicorn.error", "uvicorn.access"):
+    logging.getLogger(logger_name).handlers = custom_logger.handlers
+logger = custom_logger
 
 app = FastAPI()
 
@@ -26,11 +32,14 @@ def get_cors_headers(response: Response):
 @app.get("/", status_code=status.HTTP_200_OK)
 def check(url, response: Response):
     id = re.sub(r'http(s)://hitomi.la/[a-z]+/.+\-|\.html{0,1}', "", url)
+    result = books_control.book_exist(id)
+    collections = books_control.get_collections()
     get_cors_headers(response)
+    Log.d(f"Quearying {id}: Result={result}, from {len(collections)} collections")
     return {
         "url": url,
-        "status": books_control.book_exist(id),
-        "collections": books_control.get_collections(),
+        "status": result,
+        "collections": collections,
     }
 
 

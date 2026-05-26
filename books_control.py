@@ -60,7 +60,7 @@ def generate(temp, collection) -> bool:
             return False
     # Set metadata
     url = f"https://hitomi.la/galleries/{id}.html"
-    images_path = temp / name
+    images_path = temp / id
     pages = [PageInfo.load(path) for path in images_path.iterdir()]
     comic = ComicInfo.from_pages(
         pages=pages,
