@@ -33,6 +33,7 @@ def download(url: str, collection: str = "") -> bool:
     ]
     process = subprocess.Popen(command, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     process.wait()
+    Log.i(f"Download process for {url} has been finished with code {process.returncode}")
     return generate(temp, collection)
 
 def generate(temp, collection) -> bool:
@@ -59,6 +60,7 @@ def generate(temp, collection) -> bool:
         if ((current - begin).total_seconds() > TIMEOUT * numbers):  # Return if json file downloading is failed in 5 sec
             return False
     # Set metadata
+    Log.d(f"Metadata for {id} is ready. Start generating CBZ...")
     url = f"https://hitomi.la/galleries/{id}.html"
     images_path = temp / id
     pages = [PageInfo.load(path) for path in images_path.iterdir()]
@@ -116,6 +118,7 @@ def generate(temp, collection) -> bool:
 
 def removeDirectory(dir):
     # Remote temp directory
+    Log.d(f"Removing temp directory: {dir}")
     if os.path.exists(dir):
         os.rmdir(dir)
 
