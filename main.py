@@ -35,7 +35,7 @@ def check(url, response: Response):
     result = books_control.book_exist(id)
     collections = books_control.get_collections()
     get_cors_headers(response)
-    Log.d(f"Quearying {id}: Result={result}, from {len(collections)} collections")
+    Log.d(f"Querying {id}: Result={result}, from {len(collections)} collections")
     return {
         "url": url,
         "status": result,

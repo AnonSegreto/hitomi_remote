@@ -64,7 +64,7 @@ def generate(temp, collection) -> bool:
     # Set metadata
     Log.d(f"Metadata for {id} is ready. Start generating CBZ...")
     url = f"https://hitomi.la/galleries/{id}.html"
-    images_path = temp / id
+    images_path = temp / str(id)
     pages = [PageInfo.load(path) for path in images_path.iterdir()]
     comic = ComicInfo.from_pages(
         pages=pages,
