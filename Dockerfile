@@ -1,4 +1,4 @@
-FROM python
+FROM python:3.12
 RUN mkdir -p /opt/app
 WORKDIR /opt/app
 COPY . .
