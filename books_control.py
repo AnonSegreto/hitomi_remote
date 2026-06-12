@@ -44,6 +44,7 @@ def generate(temp, collection) -> bool:
         enter = os.path.exists(temp / "info.json")
         current = datetime.datetime.now()
         if ((current - begin).total_seconds() > TIMEOUT):  # Return if json file downloading is failed in 5 sec
+            Log.e(f"Metadata for {temp} is not ready in {TIMEOUT} seconds. Task has been cancled")
             return False
     data = {}
     with open(temp / "info.json", 'r', encoding='utf-8') as f:
@@ -58,6 +59,7 @@ def generate(temp, collection) -> bool:
         enter = f"{id}_{numbers:04}.png" in fs
         current = datetime.datetime.now()
         if ((current - begin).total_seconds() > TIMEOUT * numbers):  # Return if json file downloading is failed in 5 sec
+            Log.e(f"Download for {id} is failed in {TIMEOUT * numbers} seconds. Task has been cancled")
             return False
     # Set metadata
     Log.d(f"Metadata for {id} is ready. Start generating CBZ...")
