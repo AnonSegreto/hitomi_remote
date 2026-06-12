@@ -66,7 +66,7 @@ def generate(temp, collection) -> bool:
     url = f"https://hitomi.la/galleries/{id}.html"
     images_path = temp
     pages = []
-    for image in images_path.iterdir():
+    for image in sorted(images_path.iterdir()):
         if image.suffix in [".png", ".jpg", ".jpeg"]:
             page = PageInfo.load(image)
             pages.append(page)
